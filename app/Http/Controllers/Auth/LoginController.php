@@ -4,36 +4,43 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Socialite;
+use App\User;
 
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
     use AuthenticatesUsers;
 
     /**
-     * Where to redirect users after login.
+     * 認証ページヘユーザーをリダイレクト
      *
-     * @var string
+     * @return \Illuminate\Http\Response
      */
-    protected $redirectTo = '/home';
+    public function redirectToProvider()
+    {
+        return Socialite::driver('twitter')->redirect();
+    }
 
     /**
-     * Create a new controller instance.
+     * ユーザー情報を取得
      *
-     * @return void
+     * @return \Illuminate\Http\Response
      */
-    public function __construct()
+    public function handleProviderCallback()
     {
-        $this->middleware('guest')->except('logout');
+        $twitter_user = null;
+        //情報取得
+        try {
+            $twitter_user = Socialite::driver('twitter')->user();
+            // dd($twitter_user);
+        } catch (Exception $e) {
+            return redirect('auth/twitter');
+        }
+        if ($twitter_user) {
+            $user = User::firstOrCreate($twitter_user->id);
+        }
+        // $user->token;
     }
 }

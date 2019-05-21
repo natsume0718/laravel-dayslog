@@ -15,6 +15,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+// ログインURL
+Route::get('auth/twitter','Auth\LoginController@redirectToProvider')->name('login');
+// コールバックURL
+Route::get('auth/twitter/callback', 'Auth\LoginController@handleProviderCallback');
+// ログアウトURL
+Route::get('auth/twitter/logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::get('/home', 'HomeController@index')->name('home');
