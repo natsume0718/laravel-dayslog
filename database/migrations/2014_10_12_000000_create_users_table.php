@@ -16,6 +16,9 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('twitter_id')->unique();
+            $table->string('twitter_name')->nullable();
+            $table->string('twitter_nickname')->nullable();
+            $table->string('twitter_avatar_original')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

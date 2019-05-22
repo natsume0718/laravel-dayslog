@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Abraham\TwitterOAuth\TwitterOAuth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -12,6 +13,11 @@ use App\User;
 class LoginController extends Controller
 {
     use AuthenticatesUsers;
+
+    public function __construct()
+    {
+        $this->middleware('guest')->except('logout');
+    }
 
     /**
      * 認証ページヘユーザーをリダイレクト
@@ -39,8 +45,23 @@ class LoginController extends Controller
             return redirect('auth/twitter');
         }
         if ($twitter_user) {
-            $user = User::firstOrCreate($twitter_user->id);
+            //ユーザーの取得または生成
+            $user = User::firstOrCreate(
+                ['twitter_id' => $twitter_user->id],
+                [
+                    'twitter_name' => $twitter_user->name,
+                    'twitter_nickname' => $twitter_user->nickname,
+                    'twitter_avatar_original' => $twitter_user->avatar_original
+                ]
+            );
+            Auth::login($user, true);
         }
-        // $user->token;
+        return redirect()->route('home');
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect()->route('login');
     }
 }

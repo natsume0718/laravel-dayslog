@@ -19,7 +19,10 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'twitter_id'
+        'twitter_id',
+        'twitter_name',
+        'twitter_nickname',
+        'twitter_avatar_original'
     ];
 
     protected $dates = ['deleted_at'];
