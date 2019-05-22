@@ -11,7 +11,7 @@
 |
  */
 
-
+Route::view('/', 'index')->name('top');
 Route::prefix('auth/twitter')->group(function () {
     // ログインURL
     Route::get('/', 'Auth\LoginController@redirectToProvider')->name('login');
@@ -20,5 +20,5 @@ Route::prefix('auth/twitter')->group(function () {
     // ログアウトURL
     Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 });
-Route::view('/', 'index');
+
 Route::get('/home', 'HomeController@index')->name('home');
