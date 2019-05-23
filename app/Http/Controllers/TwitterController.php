@@ -22,7 +22,6 @@ class TwitterController extends Controller
     public function index()
     {
         $activities = Auth::user()->activities;
-        // dd($activities);
         return view('index', compact('activities'));
     }
 
@@ -33,7 +32,7 @@ class TwitterController extends Controller
      */
     public function create()
     {
-        return view('create');
+        // return view('create');
     }
 
     /**
@@ -46,7 +45,8 @@ class TwitterController extends Controller
     {
         $request->validate(['name' => 'required']);
         $user_activity = Auth::user()->activities()->create($request->all());
-        // $user_activity->fill($request->all())->save();
+        return redirect()->back();
+        // return redirect()->route();
     }
 
     /**

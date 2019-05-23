@@ -20,7 +20,7 @@
 				<p class="btn btn-primary">
 				<i class="fas fa-plus fa-lg"></i>
 				</p>
-				{!! Form::open(['route' => 'store']) !!}
+				{!! Form::open(['route' => 'activity.store']) !!}
                 <div class="form-group">
                     {!! Form::label('name', '※タスク名：') !!}
                     {!! Form::text('name', old('name'), ['class' => 'form-control']) !!}

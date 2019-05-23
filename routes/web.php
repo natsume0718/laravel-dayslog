@@ -20,10 +20,9 @@ Route::prefix('auth/twitter')->group(function () {
     // ログアウトURL
     Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 });
-
-Route::get('/index', 'TwitterController@index')->name('index');
-Route::get('/create', 'TwitterController@create')->name('create');
-Route::post('/store', 'TwitterController@store')->name('store');
-
+Route::prefix('activity')->group(function () {
+    Route::get('/', 'TwitterController@index')->name('activity.index');
+    Route::post('/', 'TwitterController@store')->name('activity.store');
+});
 
 Route::get('/home', 'HomeController@index')->name('home');
