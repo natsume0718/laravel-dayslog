@@ -39,7 +39,6 @@ class LoginController extends Controller
         //情報取得
         try {
             $twitter_user = Socialite::driver('twitter')->user();
-            // dd($twitter_user);
         } catch (Exception $e) {
             return redirect('auth/twitter');
         }

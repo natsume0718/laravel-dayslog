@@ -21,4 +21,6 @@ Route::prefix('auth/twitter')->group(function () {
     Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 });
 
+Route::get('logout', 'TwitterController@index')->name('index');
+
 Route::get('/home', 'HomeController@index')->name('home');
