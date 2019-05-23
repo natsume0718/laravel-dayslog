@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\User;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
 class Activity extends Model
@@ -15,14 +17,15 @@ class Activity extends Model
      *
      * @var array
      */
-    protected $guarded = [
-        'id'
+    protected $fillable = [
+        'name',
+        'continuation_days'
     ];
 
     protected $dates = ['deleted_at'];
 
-    public function belongsTo()
+    public function user()
     {
-
+        return $this->belongsTo(User::class);
     }
 }

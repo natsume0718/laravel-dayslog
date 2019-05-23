@@ -11,16 +11,19 @@
 |
  */
 
-Route::view('/', 'index')->name('top');
+Route::view('/', 'top')->name('top');
 Route::prefix('auth/twitter')->group(function () {
     // ログインURL
     Route::get('/', 'Auth\LoginController@redirectToProvider')->name('login');
     // コールバックURL
     Route::get('/callback', 'Auth\LoginController@handleProviderCallback');
     // ログアウトURL
-    Route::get('logout', 'Auth\LoginController@logout')->name('logout');
+    Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 });
 
 Route::get('/index', 'TwitterController@index')->name('index');
+Route::get('/create', 'TwitterController@create')->name('create');
+Route::post('/store', 'TwitterController@store')->name('store');
+
 
 Route::get('/home', 'HomeController@index')->name('home');

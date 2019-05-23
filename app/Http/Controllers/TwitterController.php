@@ -4,9 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Facades\Twitter;
+use Illuminate\Support\Facades\Auth;
 
 class TwitterController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +21,9 @@ class TwitterController extends Controller
      */
     public function index()
     {
-
+        $activities = Auth::user()->activities;
+        // dd($activities);
+        return view('index', compact('activities'));
     }
 
     /**
@@ -24,7 +33,7 @@ class TwitterController extends Controller
      */
     public function create()
     {
-        //
+        return view('create');
     }
 
     /**
@@ -35,7 +44,9 @@ class TwitterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate(['name' => 'required']);
+        $user_activity = Auth::user()->activities()->create($request->all());
+        // $user_activity->fill($request->all())->save();
     }
 
     /**
