@@ -9,12 +9,21 @@
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::view('/', 'top')->name('top');
+Route::prefix('auth/twitter')->group(function () {
+    // ログインURL
+    Route::get('/', 'Auth\LoginController@redirectToProvider')->name('login');
+    // コールバックURL
+    Route::get('/callback', 'Auth\LoginController@handleProviderCallback');
+    // ログアウトURL
+    Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 });
 
-Auth::routes();
+Route::get('/index', 'TwitterController@index')->name('index');
+Route::get('/create', 'TwitterController@create')->name('create');
+Route::post('/store', 'TwitterController@store')->name('store');
+
 
 Route::get('/home', 'HomeController@index')->name('home');

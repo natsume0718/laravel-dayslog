@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersTable extends Migration
+class CreateActivitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('activities', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('twitter_id')->unique();
-            $table->string('twitter_name')->nullable();
-            $table->string('twitter_nickname')->nullable();
-            $table->string('twitter_avatar_original')->nullable();
-            $table->rememberToken();
+            $table->integer('user_id');
+            $table->string('name')->nullable()->default(null);
+            $table->integer('continuation_days')->nullable()->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -32,6 +30,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('activities');
     }
 }
