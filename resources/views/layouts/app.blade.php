@@ -52,12 +52,7 @@
                         <li><a href="{{ route('login') }}">Login</a></li>
                         @else
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                aria-expanded="false" aria-haspopup="true" v-pre>
-                                {{ Auth::user()->name }} <span class="caret"></span>
-                            </a>
-
-                            <ul class="dropdown-menu">
+                            
                                 <li>
                                     <a href="{{ route('logout') }}" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -69,21 +64,21 @@
                                         {{ csrf_field() }}
                                     </form>
                                 </li>
-                            </ul>
-                        </li>
                         @endguest
                     </ul>
                 </div>
             </div>
         </nav>
+        @if (session('success'))
         <div class="container">
-            @if (session('success'))
-            <div class="bg-success text-center py-3 my-0">
+            <div class="alert alert-success text-center py-3 my-0">
                 {{ session('success') }}
             </div>
-            @elseif session('error')
-            <div class="bg-danger text-center py-3 my-0">
-                {{ session('success') }}
+        </div>
+        @elseif (session('error'))
+        <div class="container">
+            <div class="alert alert-danger text-center py-3 my-0">
+                {{ session('error') }}
             </div>
         </div>
         @endif
@@ -92,6 +87,16 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
+    <script>
+        (function () {
+            'use strict';
+            // フラッシュメッセージのfadeout
+            $(function () {
+                $('.alert').fadeOut(3000);
+            });
+        })();
+    </script>
+
 </body>
 
 </html>

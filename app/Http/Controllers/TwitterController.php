@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Facades\Twitter;
 use Illuminate\Support\Facades\Auth;
+use App\Activity;
 
 class TwitterController extends Controller
 {
@@ -45,8 +46,7 @@ class TwitterController extends Controller
     {
         $request->validate(['name' => 'required']);
         $user_activity = Auth::user()->activities()->create($request->all());
-        return redirect()->back();
-        // return redirect()->route();
+        return redirect()->back()->with('success', '新規追加しました');
     }
 
     /**
@@ -55,9 +55,12 @@ class TwitterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Activity $activity)
     {
-        //
+        // dd($activity, Auth::id());
+        return Auth::id() === $activity->user_id ?
+            view('show', compact('activity')) :
+            redirect()->route('top')->with('error', '不正なアクセスです');
     }
 
     /**
@@ -68,7 +71,16 @@ class TwitterController extends Controller
      */
     public function edit($id)
     {
-        //
+
+    }
+
+    public function tweet(Request $request, Activity $activity)
+    {
+        // dd($request);
+        // Twitter::post("statuses/update", [
+        //     "status" => $request->tweet
+        // ]);
+        return redirect()->back()->with('success', '投稿しました');
     }
 
     /**
@@ -80,7 +92,7 @@ class TwitterController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
     }
 
     /**
