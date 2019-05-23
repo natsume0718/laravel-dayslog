@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Facades\Twitter;
 
 class TwitterController extends Controller
 {
@@ -13,7 +14,7 @@ class TwitterController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
