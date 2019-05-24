@@ -23,7 +23,9 @@ class User extends Authenticatable
         'twitter_id',
         'twitter_name',
         'twitter_nickname',
-        'twitter_avatar_original'
+        'twitter_avatar_original',
+        'twitter_oauth_token',
+        'twitter_oauth_token_secret'
     ];
 
     protected $dates = ['deleted_at'];
