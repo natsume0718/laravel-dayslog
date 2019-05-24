@@ -98,14 +98,9 @@ class TwitterController extends Controller
             $user->twitter_oauth_token_secret
         );
 
-        // 1131167887639498752
-        $res = $twitter_user->get('statuses/retweeters/', ['id' => 327473909412814850]);
-        dd($res);
-
         $res = $twitter_user->post("statuses/update", [
             "status" => $request->tweet
         ]);
-        dd($res);
 
         return redirect()->back()->with('success', '投稿しました');
     }
