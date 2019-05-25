@@ -15,9 +15,10 @@ class CreateTweetsTable extends Migration
     {
         Schema::create('tweets', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id');
+            $table->string('user_id')->nullable();
             $table->integer('activity_id');
-            $table->integer('tweet_id');
+            $table->string('tweet_id');
+            $table->text('body')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

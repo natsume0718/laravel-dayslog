@@ -16,12 +16,14 @@ class Tweet extends Model
      * @var array
      */
     protected $fillable = [
-        'tweet_id'
+        'user_id',
+        'tweet_id',
+        'body',
     ];
 
     protected $dates = ['deleted_at'];
 
-    public function user()
+    public function activity()
     {
         return $this->belongsTo(Activity::class);
     }

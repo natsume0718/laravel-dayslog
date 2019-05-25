@@ -87,16 +87,6 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
-    <script>
-        (function () {
-            'use strict';
-            // フラッシュメッセージのfadeout
-            $(function () {
-                $('.alert').fadeOut(3000);
-            });
-        })();
-    </script>
-
 </body>
 
 </html>

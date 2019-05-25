@@ -9,14 +9,11 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">{{ $activity->name }}</div>
 					<div class="panel-body">
-						<ul class="list-group">
 							<li class="list-group-item">作成日:{{ $activity->created_at }}</li>
 							<li class="list-group-item">
 								<a class="btn btn-info" href="{{ route('activity.show',$activity->id) }}"
 									role="button">記録する</a>
 							</li>
-							<li class="list-group-item">リスト項目Ｃ</li>
-						</ul> 
 					</div>
 				</div>
 				@endforeach

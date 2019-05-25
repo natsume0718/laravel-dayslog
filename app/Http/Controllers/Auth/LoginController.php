@@ -52,8 +52,8 @@ class LoginController extends Controller
                 $user->update(
                     [
                         'twitter_name' => $twitter_user->name,
-                        'twitter_nickname' => $twitter_user->twitter_nickname,
-                        'twitter_avatar_original' => $twitter_user->avatar_original,
+                        'twitter_nickname' => $twitter_user->nickname,
+                        'twitter_avatar' => $twitter_user->avatar,
                         'twitter_oauth_token' => $token,
                         'twitter_oauth_token_secret' => $token_secret
                     ]

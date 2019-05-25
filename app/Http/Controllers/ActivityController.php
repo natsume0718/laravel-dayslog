@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Activity;
 use Illuminate\Support\Facades\Session;
 use Abraham\TwitterOAuth\TwitterOAuth;
+use Illuminate\Support\Facades\Cache;
 
 class TwitterController extends Controller
 {
@@ -25,17 +26,6 @@ class TwitterController extends Controller
     public function index()
     {
         $user = Auth::user();
-
-        $twitter_user = new TwitterOAuth(
-            config('twitter.consumer_key'),
-            config('twitter.consumer_secret'),
-            $user->twitter_oauth_token,
-            $user->twitter_oauth_token_secret
-        );
-
-        // 1131167887639498752
-        $res = $twitter_user->get('statuses/retweeters/ids', ['id' => '1131167887639498752', 'cusor' => '1131167887639498852']);
-        dd($res);
         $activities = Auth::user()->activities;
         return view('index', compact('activities'));
     }
@@ -71,9 +61,22 @@ class TwitterController extends Controller
      */
     public function show(Activity $activity)
     {
-        return Auth::id() === $activity->user_id ?
-            view('show', compact('activity')) :
+        if (Auth::id() != $activity->user_id)
             redirect()->route('top')->with('error', '不正なアクセスです');
+
+        $user = Auth::user();
+        $twitter_user = new TwitterOAuth(
+            config('twitter.consumer_key'),
+            config('twitter.consumer_secret'),
+            $user->twitter_oauth_token,
+            $user->twitter_oauth_token_secret
+        );
+        $tweets = Cache::rememberForever('tweets', function () use ($activity) {
+            return $activity->tweets;
+        });
+        // $tweets = $activity->tweets;
+        return view('show', compact('activity', 'user', 'twitter_user', 'tweets'));
+
     }
 
     /**
@@ -98,9 +101,18 @@ class TwitterController extends Controller
             $user->twitter_oauth_token_secret
         );
 
-        $res = $twitter_user->post("statuses/update", [
+        $tweet = $twitter_user->post("statuses/update", [
             "status" => $request->tweet
         ]);
+
+        if ($tweet) {
+            $activity->tweets()->create([
+                'user_id' => $user->twitter_id,
+                'tweet_id' => $tweet->id,
+                'body' => $tweet->text,
+            ]);
+        }
+
 
         return redirect()->back()->with('success', '投稿しました');
     }
