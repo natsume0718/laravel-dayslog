@@ -7,15 +7,24 @@
 			<div class="col-md-8 col-md-offset-2">
 				{!! Form::open(['route' => ['activity.tweet',$activity->id]]) !!}
 				<div class="form-group">
-					{!! Form::label('tweet', '※つぶやく：') !!}
+					{!! Form::label('tweet', '※活動内容をTwitterに投稿：') !!}
 					{!! Form::textarea('tweet', old('name'), ['class' => 'form-control']) !!}
 					@if ($errors->has('tweet'))
 					<span style="color:red;">
 						{{ $errors->first('tweet') }}
 					</span>
 					@endif
-					{!! Form::submit('保存', ['class' => 'btn btn-primary']) !!}
 				</div>
+				<div class="form-group">
+					{!! Form::label('is_reply', '※リプライ形式で投稿：') !!}
+					{!! Form::checkbox('is_reply', old('is_reply'), ['class' => 'form-control']) !!}
+					@if ($errors->has('is_reply'))
+					<span style="color:red;">
+						{{ $errors->first('is_reply') }}
+					</span>
+					@endif
+				</div>
+					{!! Form::submit('保存', ['class' => 'btn btn-primary']) !!}
 				{!! Form::close() !!}
 			</div>
 		</div>
@@ -28,6 +37,7 @@
 						<tr>
 							<td><img src="{{ $user->twitter_avatar }}" alt=""><span>{{ $user->twitter_name }}</span></td>
 							<td>{!! nl2br(e($tweet->body)) !!}</td>
+							<td>{{ $tweet->created_at }}</td>
 							<td><a href="https://twitter.com/{{$user->twitter_nickname}}/status/{{$tweet->tweet_id}}">Twitterで表示</a></td>
 						</tr>
 						@endforeach
