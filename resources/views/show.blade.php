@@ -5,7 +5,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
-				{!! Form::open(['route' => ['activity.tweet',$activity->id]]) !!}
+				{!! Form::open(['route' => ['activity.tweet',$user->twitter_nickname,$activity->task_id]]) !!}
 				<div class="form-group">
 					{!! Form::label('tweet', '※活動内容をTwitterに投稿：') !!}
 					{!! Form::textarea('tweet', old('name'), ['class' => 'form-control']) !!}

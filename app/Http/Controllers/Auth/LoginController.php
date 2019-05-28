@@ -59,7 +59,7 @@ class LoginController extends Controller
                     ]
                 );
                 Auth::login($user, true);
-                return redirect()->route('activity.index')->with('success', 'ログインしました');
+                return redirect()->route('activity.index', $twitter_user->nickname)->with('success', 'ログインしました');
             }
         } catch (Exception $e) {
             return redirect()->route('top')->with('error', 'Twitterアカウント取得に失敗しました');

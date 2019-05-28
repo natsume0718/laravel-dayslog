@@ -15,6 +15,7 @@ class CreateActivitiesTable extends Migration
     {
         Schema::create('activities', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('task_id')->nullable()->default(0);
             $table->integer('user_id');
             $table->string('name')->nullable()->default(null);
             $table->integer('continuation_days')->nullable()->default(0);

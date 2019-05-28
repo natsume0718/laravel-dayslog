@@ -9,6 +9,7 @@ use App\Activity;
 use Illuminate\Support\Facades\Session;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class TwitterController extends Controller
 {
@@ -27,7 +28,7 @@ class TwitterController extends Controller
     {
         $user = Auth::user();
         $activities = Auth::user()->activities;
-        return view('index', compact('activities'));
+        return view('index', compact('user', 'activities'));
     }
 
     /**
@@ -49,7 +50,14 @@ class TwitterController extends Controller
     public function store(Request $request)
     {
         $request->validate(['name' => 'required']);
-        $user_activity = Auth::user()->activities()->create($request->all());
+        //task作成
+        DB::transaction(function () use ($request) {
+            $user = Auth::user();
+            $task_max = $user->activities->max('task_id') + 1;
+            $user_activity = $user->activities()->create($request->all());
+            $user_activity->update(['task_id' => $task_max]);
+        });
+
         return redirect()->back()->with('success', '新規追加しました');
     }
 
@@ -59,7 +67,7 @@ class TwitterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Activity $activity)
+    public function show(String $user_name, Activity $activity)
     {
         if (Auth::id() != $activity->user_id)
             return redirect()->route('top')->with('error', '不正なアクセスです');
@@ -71,10 +79,7 @@ class TwitterController extends Controller
             $user->twitter_oauth_token,
             $user->twitter_oauth_token_secret
         );
-        //ツイート取得してキャッシュ
-        // $tweets = Cache::rememberForever('tweets' . $activity->id, function () use ($activity) {
-        //     return $activity->tweets;
-        // });
+
         $tweets = $activity->tweets;
         return view('show', compact('activity', 'user', 'twitter_user', 'tweets'));
 
@@ -91,7 +96,7 @@ class TwitterController extends Controller
 
     }
 
-    public function tweet(Request $request, Activity $activity)
+    public function tweet(String $user_name, Request $request, Activity $activity)
     {
         $user = Auth::user();
 
@@ -101,14 +106,15 @@ class TwitterController extends Controller
             $user->twitter_oauth_token,
             $user->twitter_oauth_token_secret
         );
-
-        $latest_tweet = $request->is_reply ? $activity->tweets()->latest()->first() : null;
-
+        //最新のツイートID取得
+        $latest_tweet = $request->is_reply ? $activity->tweets()->latest()->first(['tweet_id']) : null;
+        //投稿
         $tweet = $twitter_user->post("statuses/update", [
             "status" => $request->tweet,
             'in_reply_to_status_id' => $latest_tweet->tweet_id ?? null
         ]);
 
+        //ツイートを保存
         if ($tweet) {
             $activity->tweets()->create([
                 'user_id' => $user->twitter_id,

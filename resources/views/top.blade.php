@@ -11,7 +11,7 @@
 				<p><a class="btn btn-info" href="{{ route('login') }}"><i class="fab fa-twitter fa-lg" style="margin-right:0.8em"></i>Twitterで登録・ログイン</a></p>					
 				@endguest
 				@auth
-				<p><a class="btn btn-info" href="{{ route('activity.index') }}"><i class="fas fa-pen fa-lg" style="margin-right:0.8em"></i>マイページへ</a></p>					
+				<p><a class="btn btn-info" href="{{ route('activity.index',$user ? $user->twitter_nickname : null) }}"><i class="fas fa-pen fa-lg" style="margin-right:0.8em"></i>マイページへ</a></p>					
 				@endauth
 			</div>
 		</div>

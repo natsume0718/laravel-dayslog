@@ -20,6 +20,7 @@ class Activity extends Model
      */
     protected $fillable = [
         'name',
+        'task_id',
         'continuation_days'
     ];
 
@@ -33,5 +34,15 @@ class Activity extends Model
     public function tweets()
     {
         return $this->hasMany(Tweet::class);
+    }
+
+    /**
+     * モデルのルートキーの取得
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'task_id';
     }
 }
