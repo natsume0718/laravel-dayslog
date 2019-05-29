@@ -9,11 +9,15 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">{{ $activity->name }}</div>
 					<div class="panel-body">
-							<li class="list-group-item">作成日:{{ $activity->created_at }}</li>
-							<li class="list-group-item">
-								<a class="btn btn-info" href="{{ route('activity.show',[$user->twitter_nickname ,$activity->task_id]) }}"
-									role="button">記録する</a>
-							</li>
+						<li class="list-group-item">作成日:{{ $activity->created_at }}</li>
+						<li class="list-group-item">
+							<a class="btn btn-info"
+								href="{{ route('activity.show',[$user->twitter_nickname ,$activity->task_id]) }}"
+								role="button">記録する</a>
+							{!! Form::open(['method' => 'DELETE','route' => ['activity.delete',$user->twitter_nickname,$activity->task_id], 'class'=>'d-inline']) !!}
+							{!! Form::submit('削除', ['class'=>'btn btn-danger']) !!}
+							{!! Form::close() !!}
+						</li>
 					</div>
 				</div>
 				@endforeach
@@ -24,7 +28,7 @@
 				<p class="btn btn-primary">
 					<i class="fas fa-plus fa-lg"></i>
 				</p>
-				
+
 				{!! Form::open(['route' => ['activity.store',$user->twitter_nickname]]) !!}
 				<div class="form-group">
 					{!! Form::label('name', '※タスク名：') !!}

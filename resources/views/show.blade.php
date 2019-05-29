@@ -5,7 +5,16 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
-				{!! Form::open(['route' => ['activity.tweet',$user->twitter_nickname,$activity->task_id]]) !!}
+				{!! Form::open(['method' => 'PATCH','route' => ['activity.tweet',$user->twitter_nickname,$activity->task_id]]) !!}
+				<div class="form-group">
+					{!! Form::label('hour', '勉強時間：') !!}
+					{!! Form::number('hour', old('hour'), ['class' => 'form-control','min'=>'0']) !!}
+					@if ($errors->has('hour'))
+					<span style="color:red;">
+						{{ $errors->first('hour') }}
+					</span>
+					@endif
+				</div>
 				<div class="form-group">
 					{!! Form::label('tweet', '※活動内容をTwitterに投稿：') !!}
 					{!! Form::textarea('tweet', old('name'), ['class' => 'form-control']) !!}
