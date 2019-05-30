@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Session;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Config;
 
 class TwitterController extends Controller
 {
@@ -74,11 +75,11 @@ class TwitterController extends Controller
 			return redirect()->route('top')->with('error', '不正なリクエストです');
 
 		$user = Auth::user();
-
+		$time = Config::get('form_input_settings.time', array());
 		//ツイート取得
 		$tweets = $activity->tweets;
 
-		return view('show', compact('activity', 'user', 'tweets'));
+		return view('show', compact('activity', 'user', 'tweets', 'time'));
 
 	}
 
@@ -99,7 +100,14 @@ class TwitterController extends Controller
 			return redirect()->route('top')->with('error', '不正なリクエストです');
 		
 		//バリデーション
-		$request->validate(['tweet' => 'required|max:140|unique:tweets,body']);
+		$request->validate(
+			[
+				'tweet' => 'required|max:140|unique:tweets,body',
+				'hour' => 'required|numeric|min:0.25|max:22'
+
+			]
+		);
+		dd($request);
 
 		$user = Auth::user();
 

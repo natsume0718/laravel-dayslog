@@ -5,10 +5,12 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
+				合計時間
+				継続日数
 				{!! Form::open(['method' => 'PATCH','route' => ['activity.tweet',$user->twitter_nickname,$activity->task_id]]) !!}
 				<div class="form-group">
-					{!! Form::label('hour', '勉強時間：') !!}
-					{!! Form::number('hour', old('hour'), ['class' => 'form-control','min'=>'0']) !!}
+					{!! Form::label('hour', '活動時間：') !!}
+					{!! Form::select('hour', $time,old('hour'), ['class' => 'form-control','min'=>'0']) !!}
 					@if ($errors->has('hour'))
 					<span style="color:red;">
 						{{ $errors->first('hour') }}
