@@ -19,6 +19,7 @@ class CreateTweetsTable extends Migration
             $table->integer('activity_id');
             $table->string('tweet_id');
             $table->text('body')->nullable();
+            $table->string('hour')->nullable()->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

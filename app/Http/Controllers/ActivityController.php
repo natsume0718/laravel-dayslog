@@ -11,6 +11,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
+use App\Rules\InputHour;
 
 class TwitterController extends Controller
 {
@@ -98,16 +99,15 @@ class TwitterController extends Controller
 	{
 		if (Auth::id() != $activity->user_id)
 			return redirect()->route('top')->with('error', '不正なリクエストです');
+
 		
 		//バリデーション
 		$request->validate(
 			[
-				'tweet' => 'required|max:140|unique:tweets,body',
-				'hour' => 'required|numeric|min:0.25|max:22'
-
+				'tweet' => ['required', 'max:140', 'unique:tweets,body'],
+				'hour' => ['required', 'numeric', new InputHour]
 			]
 		);
-		dd($request);
 
 		$user = Auth::user();
 
@@ -122,16 +122,20 @@ class TwitterController extends Controller
 		//投稿
 		$tweet = $twitter_user->post("statuses/update", [
 			"status" => $request->tweet,
-			'in_reply_to_status_id' => $latest_tweet->tweet_id ?? null
+			'in_reply_to_status_id' => $latest_tweet->tweet_id ?? null,
 		]);
 
 		//ツイートを保存
 		if ($tweet->id) {
+			$time = Config::get('form_input_settings.time', array());
+			$hour = $time[$request->hour];
 			$activity->tweets()->create([
 				'user_id' => $user->twitter_id,
 				'tweet_id' => $tweet->id,
 				'body' => $tweet->text,
+				'hour' => $hour
 			]);
+			$activity->increment('hour', $hour);
 		}
 
 		return redirect()->back()->with('success', '投稿しました');

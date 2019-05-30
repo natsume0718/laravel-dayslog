@@ -18,6 +18,7 @@ class CreateActivitiesTable extends Migration
             $table->integer('task_id')->nullable()->default(0);
             $table->integer('user_id');
             $table->string('name')->nullable()->default(null);
+            $table->string('hour')->nullable()->default(0);
             $table->integer('continuation_days')->nullable()->default(0);
             $table->timestamps();
             $table->softDeletes();

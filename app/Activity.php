@@ -21,6 +21,7 @@ class Activity extends Model
     protected $fillable = [
         'name',
         'task_id',
+        'hour',
         'continuation_days'
     ];
 

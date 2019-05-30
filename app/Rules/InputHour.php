@@ -3,6 +3,8 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Facades\Config;
+
 
 class InputHour implements Rule
 {
@@ -25,7 +27,9 @@ class InputHour implements Rule
      */
     public function passes($attribute, $value)
     {
-        //
+        $time = Config::get('form_input_settings.time', array());
+        $value = $time[$value];
+        return in_array($value, $time, false);
     }
 
     /**
@@ -35,6 +39,6 @@ class InputHour implements Rule
      */
     public function message()
     {
-        return 'The validation error message.';
+        return ':attribute is invalid';
     }
 }

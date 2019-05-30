@@ -5,9 +5,14 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
-				合計時間
+				<ul class="list-group">
+					<li class="list-group-item">合計時間：{{ $activity->hour }} 時間</li>
+					<li class="list-group-item">継続日数</li>
+				</ul>
+				
 				継続日数
-				{!! Form::open(['method' => 'PATCH','route' => ['activity.tweet',$user->twitter_nickname,$activity->task_id]]) !!}
+				{!! Form::open(['method' => 'PATCH','route' =>
+				['activity.tweet',$user->twitter_nickname,$activity->task_id]]) !!}
 				<div class="form-group">
 					{!! Form::label('hour', '活動時間：') !!}
 					{!! Form::select('hour', $time,old('hour'), ['class' => 'form-control','min'=>'0']) !!}
@@ -35,7 +40,7 @@
 					</span>
 					@endif
 				</div>
-					{!! Form::submit('保存', ['class' => 'btn btn-primary']) !!}
+				{!! Form::submit('保存', ['class' => 'btn btn-primary']) !!}
 				{!! Form::close() !!}
 			</div>
 		</div>
@@ -46,13 +51,16 @@
 					<table class="table table-stiped table-bordered" style="background-color:white;">
 						@foreach ($tweets as $tweet)
 						<tr>
-							<td><img src="{{ $user->twitter_avatar }}" alt=""><span>{{ $user->twitter_name }}</span></td>
+							<td><img src="{{ $user->twitter_avatar }}" alt=""><span>{{ $user->twitter_name }}</span>
+							</td>
 							<td>{!! nl2br(e($tweet->body)) !!}</td>
 							<td>{{ $tweet->created_at }}</td>
-							<td><a href="https://twitter.com/{{$user->twitter_nickname}}/status/{{$tweet->tweet_id}}">Twitterで表示</a></td>
+							<td><a
+									href="https://twitter.com/{{$user->twitter_nickname}}/status/{{$tweet->tweet_id}}">Twitterで表示</a>
+							</td>
 						</tr>
 						@endforeach
-						
+
 					</table>
 					@endisset
 				</div>
