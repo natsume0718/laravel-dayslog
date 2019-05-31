@@ -7,10 +7,8 @@
 			<div class="col-md-8 col-md-offset-2">
 				<ul class="list-group">
 					<li class="list-group-item">合計時間：{{ $activity->hour }} 時間</li>
-					<li class="list-group-item">継続日数</li>
+					<li class="list-group-item">継続日数：{{ $activity->continuation_days }} 日</li>
 				</ul>
-				
-				継続日数
 				{!! Form::open(['method' => 'PATCH','route' =>
 				['activity.tweet',$user->twitter_nickname,$activity->task_id]]) !!}
 				<div class="form-group">

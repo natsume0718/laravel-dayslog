@@ -19,9 +19,19 @@ class Tweet extends Model
         'user_id',
         'tweet_id',
         'body',
+        'hour'
     ];
 
-    protected $dates = ['deleted_at'];
+    /**
+     * 日付を変形する属性
+     *
+     * @var array
+     */
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'deleted_at'
+    ];
 
     public function activity()
     {

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use App\Rules\InputHour;
+use Carbon\Carbon;
 
 class TwitterController extends Controller
 {
@@ -78,7 +79,7 @@ class TwitterController extends Controller
 		$user = Auth::user();
 		$time = Config::get('form_input_settings.time', array());
 		//ツイート取得
-		$tweets = $activity->tweets;
+		$tweets = $activity->tweets()->latest()->get();
 
 		return view('show', compact('activity', 'user', 'tweets', 'time'));
 
@@ -100,7 +101,6 @@ class TwitterController extends Controller
 		if (Auth::id() != $activity->user_id)
 			return redirect()->route('top')->with('error', '不正なリクエストです');
 
-		
 		//バリデーション
 		$request->validate(
 			[
@@ -111,34 +111,44 @@ class TwitterController extends Controller
 
 		$user = Auth::user();
 
-		$twitter_user = new TwitterOAuth(
-			config('twitter.consumer_key'),
-			config('twitter.consumer_secret'),
-			$user->twitter_oauth_token,
-			$user->twitter_oauth_token_secret
-		);
-		//最新のツイートID取得
+		// //最新のツイートID取得してツイート
 		$latest_tweet = $request->is_reply ? $activity->tweets()->latest()->first(['tweet_id']) : null;
-		//投稿
-		$tweet = $twitter_user->post("statuses/update", [
-			"status" => $request->tweet,
-			'in_reply_to_status_id' => $latest_tweet->tweet_id ?? null,
-		]);
+		$tweet = $this->twitterTweet($request->tweet, $latest_tweet->tweet_id ?? null);
 
-		//ツイートを保存
+		//ツイート成功時DBに保存
 		if ($tweet->id) {
+			//活動時間取得
 			$time = Config::get('form_input_settings.time', array());
 			$hour = $time[$request->hour];
-			$activity->tweets()->create([
+			
+			//活動時間のある最新のツイート取得
+			$exist_hour_latest_tweet = $activity->tweets()->where('hour', '>', 0)->latest()->first();
+			
+			//投稿を保存
+			$posted_tweet = $activity->tweets()->create([
 				'user_id' => $user->twitter_id,
 				'tweet_id' => $tweet->id,
 				'body' => $tweet->text,
 				'hour' => $hour
 			]);
-			$activity->increment('hour', $hour);
+			if ($posted_tweet && $hour) {
+				//差分取得
+				$diff_posted_day = $exist_hour_latest_tweet->created_at->diffInDays($posted_tweet->created_at);
+				$diff_posted_hour = $exist_hour_latest_tweet->created_at->diffInHours($posted_tweet->created_at);
+				//前回の投稿から6時間以上経過している、２日経過していなかったら、継続日数+1
+				if ($diff_posted_hour > 5 && $diff_posted_day < 2) {
+					$activity->increment('continuation_days', 1);
+				}
+				//２日以上経過していたら、継続日数リセット
+				if ($diff_posted_day > 1) {
+					$activity->update(['continuation_days' => 0]);
+				}
+				$activity->increment('hour', $hour);
+			}
+			return redirect()->back()->with('success', '投稿しました');
 		}
+		return redirect()->back()->with('error', '投稿に失敗しました');
 
-		return redirect()->back()->with('success', '投稿しました');
 	}
 
 	/**
@@ -165,5 +175,31 @@ class TwitterController extends Controller
 			return redirect()->route('top')->with('error', '不正なリクエストです');
 		$activity->delete();
 		return redirect()->back()->with('success', '活動を削除しました');
+	}
+
+	/**
+	 * ツイッターにてツイートを行う
+	 *
+	 * @param  String  $txt
+	 * @param  String  $replyTo
+	 * @return array
+	 */
+	private function twitterTweet(String $txt, String $replyId = null)
+	{
+		$user = Auth::user();
+
+		$twitter_user = new TwitterOAuth(
+			config('twitter.consumer_key'),
+			config('twitter.consumer_secret'),
+			$user->twitter_oauth_token,
+			$user->twitter_oauth_token_secret
+		);
+		//投稿
+		$tweet = $twitter_user->post("statuses/update", [
+			"status" => $txt,
+			'in_reply_to_status_id' => $replyId,
+		]);
+
+		return $tweet;
 	}
 }
