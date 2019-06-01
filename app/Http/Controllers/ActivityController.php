@@ -82,7 +82,6 @@ class TwitterController extends Controller
 		$tweets = $activity->tweets()->latest()->get();
 
 		return view('show', compact('activity', 'user', 'tweets', 'time'));
-
 	}
 
 	/**
@@ -121,8 +120,8 @@ class TwitterController extends Controller
 			$time = Config::get('form_input_settings.time', array());
 			$hour = $time[$request->hour];
 			
-			//活動時間のある最新のツイート取得
-			$exist_hour_latest_tweet = $activity->tweets()->where('hour', '>', 0)->latest()->first();
+			//活動時間のある、今日より以前の最新のツイート取得
+			$exist_hour_latest_tweet = $activity->tweets()->where('created_at', '<', new Carbon('today', 'Asia/Tokyo'))->where('hour', '>', 0)->latest()->first();
 			
 			//投稿を保存
 			$posted_tweet = $activity->tweets()->create([
@@ -135,8 +134,8 @@ class TwitterController extends Controller
 				//差分取得
 				$diff_posted_day = $exist_hour_latest_tweet->created_at->diffInDays($posted_tweet->created_at);
 				$diff_posted_hour = $exist_hour_latest_tweet->created_at->diffInHours($posted_tweet->created_at);
-				//前回の投稿から6時間以上経過している、２日経過していなかったら、継続日数+1
-				if ($diff_posted_hour > 5 && $diff_posted_day < 2) {
+				//前回の投稿から20時間以上経過している、経過日が1日なら、継続日数+1
+				if ($diff_posted_hour > 20 || $diff_posted_day == 1) {
 					$activity->increment('continuation_days', 1);
 				}
 				//２日以上経過していたら、継続日数リセット
@@ -145,6 +144,7 @@ class TwitterController extends Controller
 				}
 				$activity->increment('hour', $hour);
 			}
+			dd($exist_hour_latest_tweet);
 			return redirect()->back()->with('success', '投稿しました');
 		}
 		return redirect()->back()->with('error', '投稿に失敗しました');
