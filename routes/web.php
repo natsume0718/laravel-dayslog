@@ -24,11 +24,11 @@ Route::prefix('auth/twitter')->group(function () {
     Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 });
 Route::group(['middleware' => ['auth', 'user.name'], 'prefix' => 'activity'], function () {
-    Route::get('{user_name}/', 'TwitterController@index')->name('activity.index');
-    Route::post('{user_name}/', 'TwitterController@store')->name('activity.store');
-    Route::get('{user_name}/{activity}', 'TwitterController@show')->name('activity.show');
-    Route::patch('{user_name}/{activity}', 'TwitterController@tweet')->name('activity.tweet');
-    Route::delete('{user_name}/{activity}', 'TwitterController@destroy')->name('activity.delete');
+    Route::get('{user_name}/', 'ActivityController@index')->name('activity.index');
+    Route::post('{user_name}/', 'ActivityController@store')->name('activity.store');
+    Route::get('{user_name}/{activity}', 'ActivityController@show')->name('activity.show');
+    Route::patch('{user_name}/{activity}', 'ActivityController@tweet')->name('activity.tweet');
+    Route::delete('{user_name}/{activity}', 'ActivityController@destroy')->name('activity.delete');
 });
 
 Route::get('/home', 'HomeController@index')->name('home');

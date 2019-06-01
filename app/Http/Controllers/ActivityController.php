@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Config;
 use App\Rules\InputHour;
 use Carbon\Carbon;
 
-class TwitterController extends Controller
+class ActivityController extends Controller
 {
 
 	public function __construct()
