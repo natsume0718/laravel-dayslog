@@ -6,9 +6,7 @@ use Illuminate\Http\Request;
 use App\Facades\Twitter;
 use Illuminate\Support\Facades\Auth;
 use App\Activity;
-use Illuminate\Support\Facades\Session;
 use Abraham\TwitterOAuth\TwitterOAuth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use App\Rules\InputHour;
@@ -32,16 +30,6 @@ class ActivityController extends Controller
 		$user = Auth::user();
 		$activities = $user->activities;
 		return view('index', compact('user', 'activities'));
-	}
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function create()
-	{
-		// return view('create');
 	}
 
 	/**
@@ -82,17 +70,13 @@ class ActivityController extends Controller
 	}
 
 	/**
-	 * Show the form for editing the specified resource.
+	 * Update the specified resource in storage.
 	 *
+	 * @param  \Illuminate\Http\Request  $request
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function edit($id)
-	{
-
-	}
-
-	public function tweet(String $user_name, Request $request, Activity $activity)
+	public function update(String $user_name, Request $request, Activity $activity)
 	{
 		//バリデーション
 		$request->validate(
@@ -138,19 +122,6 @@ class ActivityController extends Controller
 			return redirect()->back()->with('success', '投稿しました');
 		}
 		return redirect()->back()->with('error', '投稿に失敗しました');
-
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function update(Request $request, $id)
-	{
-
 	}
 
 	/**
