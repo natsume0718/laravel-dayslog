@@ -73,9 +73,6 @@ class TwitterController extends Controller
 	 */
 	public function show(String $user_name, Activity $activity)
 	{
-		if (Auth::id() != $activity->user_id)
-			return redirect()->route('top')->with('error', '不正なリクエストです');
-
 		$user = Auth::user();
 		$time = Config::get('form_input_settings.time', array());
 		//ツイート取得
@@ -97,9 +94,6 @@ class TwitterController extends Controller
 
 	public function tweet(String $user_name, Request $request, Activity $activity)
 	{
-		if (Auth::id() != $activity->user_id)
-			return redirect()->route('top')->with('error', '不正なリクエストです');
-
 		//バリデーション
 		$request->validate(
 			[
@@ -167,8 +161,6 @@ class TwitterController extends Controller
 	 */
 	public function destroy(String $user_name, Activity $activity)
 	{
-		if (Auth::id() != $activity->user_id)
-			return redirect()->route('top')->with('error', '不正なリクエストです');
 		$activity->delete();
 		return redirect()->back()->with('success', '活動を削除しました');
 	}
@@ -197,7 +189,7 @@ class TwitterController extends Controller
 		]);
 
 		//エラー出たらnullを返す
-		return $tweet->errors ? null : $tweet;
+		return isset($tweet->errors) ? null : $tweet;
 
 	}
 }

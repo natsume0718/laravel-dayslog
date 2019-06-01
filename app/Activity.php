@@ -45,14 +45,4 @@ class Activity extends Model
     {
         return $this->hasMany(Tweet::class);
     }
-
-    /**
-     * モデルのルートキーの取得
-     *
-     * @return string
-     */
-    public function getRouteKeyName()
-    {
-        return 'task_id';
-    }
 }
