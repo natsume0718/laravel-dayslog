@@ -29,6 +29,7 @@ Route::group(['middleware' => ['auth', 'user.name'], 'prefix' => 'activity'], fu
     Route::get('{user_name}/{activity}', 'ActivityController@show')->name('activity.show');
     Route::patch('{user_name}/{activity}', 'ActivityController@update')->name('activity.tweet');
     Route::delete('{user_name}/{activity}', 'ActivityController@destroy')->name('activity.delete');
+    Route::delete('{user_name}/{activity}/{id}', 'ActivityController@deleteTweet')->name('tweet.delete');
 });
 
 Route::get('/home', 'HomeController@index')->name('home');

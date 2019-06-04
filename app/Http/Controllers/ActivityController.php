@@ -127,13 +127,46 @@ class ActivityController extends Controller
 	/**
 	 * Remove the specified resource from storage.
 	 *
-	 * @param  int  $id
+	 * @param  Activity $activity
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy(String $user_name, Activity $activity)
 	{
 		$activity->delete();
 		return redirect()->back()->with('success', '活動を削除しました');
+	}
+
+
+	/**
+	 * ツイートの削除をする
+	 * 
+	 * @param  String $user_name
+	 * @param  Activity $activity
+	 * @param  String $id
+	 * @return \Illuminate\Http\Response
+	 */
+	public function deleteTweet(String $user_name, Activity $activity, String $id)
+	{
+		$user = $activity->user;
+		$db_tweet = $activity->tweets()->where('tweet_id', $id)->first();
+		if ($db_tweet) {
+			$hour = $db_tweet->hour;
+			$db_tweet->delete();
+			$activity->decrement('hour', $hour);
+			$twitter_user = new TwitterOAuth(
+				config('twitter.consumer_key'),
+				config('twitter.consumer_secret'),
+				$user->twitter_oauth_token,
+				$user->twitter_oauth_token_secret
+			);
+			//削除
+			$tweet = $twitter_user->post("statuses/destroy", [
+				"id" => $id,
+			]);
+			return redirect()->back()->with(isset($tweet->errors) ? 'error' : 'success', isset($tweet->errors) ? '削除に失敗しました' : '削除しました');
+		}
+
+
 	}
 
 	/**
