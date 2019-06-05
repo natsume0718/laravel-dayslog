@@ -65,8 +65,8 @@ class ActivityController extends Controller
 		$time = Config::get('form_input_settings.time', array());
 		//ツイート取得
 		$tweets = $activity->tweets()->latest()->get();
-
-		return view('show', compact('activity', 'user', 'tweets', 'time'));
+		$latest_tweet = $tweets->first();
+		return view('show', compact('activity', 'user', 'tweets', 'time', 'latest_tweet'));
 	}
 
 	/**
