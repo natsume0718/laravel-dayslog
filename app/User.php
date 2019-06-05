@@ -23,10 +23,21 @@ class User extends Authenticatable
         'twitter_id',
         'twitter_name',
         'twitter_nickname',
-        'twitter_avatar_original'
+        'twitter_avatar',
+        'twitter_oauth_token',
+        'twitter_oauth_token_secret'
     ];
 
-    protected $dates = ['deleted_at'];
+    /**
+     * 日付を変形する属性
+     *
+     * @var array
+     */
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'deleted_at'
+    ];
 
     public function activities()
     {

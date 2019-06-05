@@ -7,11 +7,11 @@
             <div class="col-md-8 col-md-offset-2">
                 {!! Form::open(['route' => 'store']) !!}
                 <div class="form-group">
-                    {!! Form::label('name', '※タスク名：') !!}
-                    {!! Form::text('name', old('name'), ['class' => 'form-control']) !!}
-                    @if ($errors->has('name'))
+                    {!! Form::label('tweet', '※タスク名：') !!}
+                    {!! Form::textarea('tweet', old('name'), ['class' => 'form-control']) !!}
+                    @if ($errors->has('tweet'))
                     <span style="color:red;">
-                        {{ $errors->first('name') }}
+                        {{ $errors->first('tweet') }}
                     </span>
                     @endif
                     {!! Form::submit('保存', ['class' => 'btn btn-primary']) !!}
