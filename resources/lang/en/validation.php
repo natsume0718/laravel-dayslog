@@ -87,6 +87,7 @@ return [
     'unique'               => 'The :attribute has already been taken.',
     'uploaded'             => 'The :attribute failed to upload.',
     'url'                  => 'The :attribute format is invalid.',
+    'full_harf_width_max'  => 'The :attribute may not be greater than :max characters.',
 
     /*
     |--------------------------------------------------------------------------
