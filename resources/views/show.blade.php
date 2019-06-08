@@ -24,7 +24,12 @@
 				</div>
 				<div class="form-group">
 					{!! Form::label('tweet', '※活動内容をTwitterに投稿：') !!}
-					{!! Form::textarea('tweet', old('name'), ['class' => 'form-control','id'=>'js-countText','rows'=>5]) !!}
+					{!! Form::textarea('tweet', old('name'), ['class' => 'form-control','id'=>'textarea js-countText','rows'=>5]) !!}
+
+					<p class="lead">
+            			<span id="result">140</span>
+          			</p>
+
 					<div id="js-error-color"><span class="js-show-countText">0</span>/140</div>
 					@if ($errors->has('tweet'))
 					<span style="color:red;">

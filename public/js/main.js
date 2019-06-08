@@ -25,3 +25,25 @@ window.addEventListener('DOMContentLoaded', function () {
     };
 
 });
+
+var charcount = function (str) {
+    len = 0;
+    str = str.split("");
+    for (i = 0; i < str.length; i++) {
+        if (str[i].match(/[ｱ-ﾝﾞﾟ]+/)) {
+            // 半角カタカナ
+            len++;
+        } else {
+            esc = escape(str[i]);
+            if (esc.match(/^\%u/)) {
+                // 全角
+                len += 2;
+            } else {
+                // 半角英数
+                len++;
+            }
+        }
+    }
+
+    return len;
+}
