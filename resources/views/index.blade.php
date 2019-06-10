@@ -13,7 +13,7 @@
 						<li class="list-group-item">
 							<a class="btn btn-info"
 								href="{{ route('activity.show',[$user->twitter_nickname ,$activity->task_id]) }}"
-								role="button" data-turbolinks="false" style="margin-bottom:0.8em">記録する</a>
+								role="button" style="margin-bottom:0.8em">記録する</a>
 							{!! Form::open(['method' => 'DELETE','route' =>['activity.delete',$user->twitter_nickname,$activity->task_id], 'class'=>'d-inline']) !!}
 							{!! Form::submit('削除', ['class'=>'btn btn-danger']) !!}
 							{!! Form::close() !!}
