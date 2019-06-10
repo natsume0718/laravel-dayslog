@@ -24,12 +24,7 @@
 				</div>
 				<div class="form-group">
 					{!! Form::label('tweet', '※活動内容をTwitterに投稿：') !!}
-					{!! Form::textarea('tweet', old('name'), ['class' => 'form-control','id'=>'textarea js-countText','rows'=>5]) !!}
-
-					<p class="lead">
-            			<span id="result">140</span>
-          			</p>
-
+					{!! Form::textarea('tweet', old('name'), ['class' => 'form-control','id'=>'js-countText','rows'=>5]) !!}
 					<div id="js-error-color"><span class="js-show-countText">0</span>/140</div>
 					@if ($errors->has('tweet'))
 					<span style="color:red;">
@@ -115,7 +110,7 @@ window.addEventListener('DOMContentLoaded', function () {
 	}
 	if(selectbx) {
 		//取得
-		let prev_textbox_str = document.getElementById("js-countText").value;
+		let prev_textbox_str = document.getElementById("js-countText");
 		let text = "";	
 		//セレクトから外れたときにも取得
 		selectbx.addEventListener('focus', function () {

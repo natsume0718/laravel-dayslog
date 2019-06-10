@@ -1,4 +1,4 @@
-window.addEventListener('DOMContentLoaded', function () {
+window.addEventListener('load', function () {
     let node = document.getElementById("js-countText");
     if (node) {
         node.addEventListener('keyup', count, false);
@@ -15,7 +15,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
     function count() {
         let node = document.getElementById("js-countText");
-        let str = node.value.length;
+        let str = getLen(node.value);
         let counter = document.querySelector(".js-show-countText");
         counter.innerHTML = str;
         if (str > 140)
@@ -26,24 +26,19 @@ window.addEventListener('DOMContentLoaded', function () {
 
 });
 
-var charcount = function (str) {
-    len = 0;
-    str = str.split("");
-    for (i = 0; i < str.length; i++) {
-        if (str[i].match(/[ｱ-ﾝﾞﾟ]+/)) {
-            // 半角カタカナ
-            len++;
+function getLen(str) {
+    var result = 0;
+    for (var i = 0; i < str.length; i++) {
+        var chr = str.charCodeAt(i);
+        if ((chr >= 0x00 && chr < 0x81) ||
+            (chr === 0xf8f0) ||
+            (chr >= 0xff61 && chr < 0xffa0) ||
+            (chr >= 0xf8f1 && chr < 0xf8f4)) {
+            result += 0.5;
         } else {
-            esc = escape(str[i]);
-            if (esc.match(/^\%u/)) {
-                // 全角
-                len += 2;
-            } else {
-                // 半角英数
-                len++;
-            }
+            result += 1;
         }
     }
-
-    return len;
-}
+    //結果を返す
+    return result;
+};
