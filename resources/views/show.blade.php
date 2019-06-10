@@ -5,6 +5,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
+				<a href="{{ route('activity.index',$user->twitter_nickname) }}">マイページへ</a>
 				<ul class="list-group">
 					<li class="list-group-item">合計時間：{{ $activity->hour }} 時間</li>
 					<li class="list-group-item">継続日数：{{ $activity->continuation_days }} 日</li>
@@ -41,10 +42,8 @@
 					</span>
 					@endif
 				</div>
-				<div style="display:flex;justify-content: space-between;">
+				<div style="display:flex;justify-content: center;">
 					{!! Form::submit('保存', ['class' => 'btn btn-primary']) !!}
-					<a class="btn btn-info" href="{{ route('activity.index',$user->twitter_nickname) }}"><i
-							class="fas fa-pen fa-lg" style="margin-right:0.8em"></i>マイページへ</a>
 				</div>
 				{!! Form::close() !!}
 			</div>
