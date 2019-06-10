@@ -98,8 +98,8 @@ window.addEventListener('DOMContentLoaded', function () {
             if (this.checked) {
 				@isset($latest_tweet)
 				let prev_time = @json($latest_tweet->hour);
-				let tomorrow = @json($activity->days_of_activity) + 1;
-				let serch = "Day：" + tomorrow + "\n活動時間：" + prev_time + "h\n";
+				let today = @json($activity->days_of_activity);
+				let serch = "Day：" + today + "\n活動時間：" + prev_time + "h\n";
 				input_php.value = @json($latest_tweet->body);
 				let regExp = new RegExp(serch,"g");
 				input_php.value = input_php.value.replace(regExp,"");
