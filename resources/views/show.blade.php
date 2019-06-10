@@ -110,7 +110,7 @@ window.addEventListener('DOMContentLoaded', function () {
 	}
 	if(selectbx) {
 		//取得
-		let prev_textbox_str = document.getElementById("js-countText").value;
+		let prev_textbox_str = document.getElementById("js-countText");
 		let text = "";	
 		//セレクトから外れたときにも取得
 		selectbx.addEventListener('focus', function () {

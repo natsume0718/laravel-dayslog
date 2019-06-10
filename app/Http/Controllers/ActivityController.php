@@ -81,7 +81,7 @@ class ActivityController extends Controller
 		//バリデーション
 		$request->validate(
 			[
-				'tweet' => ['required', 'max:140'],
+				'tweet' => ['required'],
 				'hour' => ['required', 'numeric', new InputHour]
 			]
 		);
@@ -121,7 +121,7 @@ class ActivityController extends Controller
 			}
 			return redirect()->back()->with('success', '投稿しました');
 		}
-		return redirect()->back()->with('error', '投稿に失敗しました');
+		return redirect()->back()->with('error', '投稿に失敗しました')->withInput();
 	}
 
 	/**
