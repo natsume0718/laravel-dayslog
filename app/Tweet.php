@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Activity;
+use Carbon\Carbon;
 
 class Tweet extends Model
 {
@@ -36,6 +37,16 @@ class Tweet extends Model
     public function activity()
     {
         return $this->belongsTo(Activity::class);
+    }
+
+    public function scopeCreatedLaterToday($query)
+    {
+        return $query->where('created_at', '<', new Carbon('today', 'Asia/Tokyo'));
+    }
+
+    public function scopeExitActivityHour($query)
+    {
+        return $query->where('hour', '>', 0);
     }
 
 }

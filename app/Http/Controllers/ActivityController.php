@@ -106,7 +106,8 @@ class ActivityController extends Controller
 			]);
 			if ($posted_tweet && $hour) {
 				//活動時間のある、今日より以前の最新のツイート取得
-				$exist_hour_latest_tweet = $activity->tweets()->where('created_at', '<', new Carbon('today', 'Asia/Tokyo'))->where('hour', '>', 0)->latest()->first();
+				$exist_hour_latest_tweet = $activity->tweets()->CreatedLaterToday()->ExitActivityHour()->latest()->first();
+				dd($exist_hour_latest_tweet);
 				//差分取得
 				$diff_posted_day = $exist_hour_latest_tweet ? $exist_hour_latest_tweet->created_at->diffInDays($posted_tweet->created_at) : null;
 				//前日に投稿しているなら継続日数+1
