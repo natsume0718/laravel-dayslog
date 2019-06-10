@@ -81,7 +81,7 @@ class ActivityController extends Controller
 		//バリデーション
 		$request->validate(
 			[
-				'tweet' => ['required', 'max:140'],
+				'tweet' => ['required'],
 				'hour' => ['required', 'numeric', new InputHour]
 			]
 		);

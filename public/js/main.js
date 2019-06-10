@@ -1,4 +1,4 @@
-window.addEventListener('DOMContentLoaded', function () {
+window.addEventListener('load', function () {
     let node = document.getElementById("js-countText");
     if (node) {
         node.addEventListener('keyup', count, false);
@@ -15,7 +15,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
     function count() {
         let node = document.getElementById("js-countText");
-        let str = node.value.length;
+        let str = getLen(node.value);
         let counter = document.querySelector(".js-show-countText");
         counter.innerHTML = str;
         if (str > 140)
@@ -25,3 +25,20 @@ window.addEventListener('DOMContentLoaded', function () {
     };
 
 });
+
+function getLen(str) {
+    var result = 0;
+    for (var i = 0; i < str.length; i++) {
+        var chr = str.charCodeAt(i);
+        if ((chr >= 0x00 && chr < 0x81) ||
+            (chr === 0xf8f0) ||
+            (chr >= 0xff61 && chr < 0xffa0) ||
+            (chr >= 0xf8f1 && chr < 0xf8f4)) {
+            result += 0.5;
+        } else {
+            result += 1;
+        }
+    }
+    //結果を返す
+    return result;
+};
