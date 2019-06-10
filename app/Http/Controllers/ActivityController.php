@@ -98,7 +98,7 @@ class ActivityController extends Controller
 			$time = Config::get('form_input_settings.time', array());
 			$hour = $time[$request->hour];
 			//活動時間のある、今日のツイートを取得
-			$exist_hour_today_tweet = $activity->tweets()->CreatedToday()->ExitActivityHour()->first();
+			$exist_hour_today_tweet = $activity->tweets()->CreatedToday()->ExitActivityHour()->count();
 			//投稿を保存
 			$posted_tweet = $activity->tweets()->create([
 				'user_id' => $user->twitter_id,
@@ -158,10 +158,16 @@ class ActivityController extends Controller
 	{
 		$user = $activity->user;
 		$db_tweet = $activity->tweets()->where('tweet_id', $id)->first();
+		//活動時間のある、今日のツイート数を取得
+		$exist_hour_today_tweet = $activity->tweets()->CreatedToday()->ExitActivityHour()->count();
 		if ($db_tweet) {
 			$hour = $db_tweet->hour;
 			$db_tweet->delete();
 			$activity->decrement('hour', $hour);
+			//今日のツイートがラスト一個なら活動日数減少
+			if ($exist_hour_today_tweet == 1)
+				$activity->decrement('days_of_activity', 1);
+
 			$twitter_user = new TwitterOAuth(
 				config('twitter.consumer_key'),
 				config('twitter.consumer_secret'),
