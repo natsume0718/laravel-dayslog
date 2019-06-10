@@ -22,7 +22,8 @@ class Activity extends Model
         'name',
         'task_id',
         'hour',
-        'continuation_days'
+        'continuation_days',
+        'days_of_activity'
     ];
 
     /**

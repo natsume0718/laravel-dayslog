@@ -104,20 +104,21 @@ class ActivityController extends Controller
 				'body' => $tweet->text,
 				'hour' => $hour
 			]);
+
+			//投稿成功している、活動時間がある
 			if ($posted_tweet && $hour) {
 				//活動時間のある、今日より以前の最新のツイート取得
 				$exist_hour_latest_tweet = $activity->tweets()->CreatedLaterToday()->ExitActivityHour()->latest()->first();
-				dd($exist_hour_latest_tweet);
 				//差分取得
 				$diff_posted_day = $exist_hour_latest_tweet ? $exist_hour_latest_tweet->created_at->diffInDays($posted_tweet->created_at) : null;
 				//前日に投稿しているなら継続日数+1
-				if ($exist_hour_latest_tweet && $exist_hour_latest_tweet->created_at->isYesterDay()) {
+				if ($exist_hour_latest_tweet && $exist_hour_latest_tweet->created_at->isYesterDay())
 					$activity->increment('continuation_days', 1);
-				}
+				
 				//２日以上経過していたら、継続日数リセット
-				if ($diff_posted_day && $diff_posted_day > 1) {
+				if ($diff_posted_day > 1)
 					$activity->update(['continuation_days' => 0]);
-				}
+
 				$activity->increment('hour', $hour);
 			}
 			return redirect()->back()->with('success', '投稿しました');

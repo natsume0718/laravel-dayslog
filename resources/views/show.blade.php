@@ -8,6 +8,7 @@
 				<a href="{{ route('activity.index',$user->twitter_nickname) }}">マイページへ</a>
 				<ul class="list-group">
 					<li class="list-group-item">合計時間：{{ $activity->hour }} 時間</li>
+					<li class="list-group-item">活動日数：{{ $activity->continuation_days }} 日目</li>
 					<li class="list-group-item">継続日数：{{ $activity->continuation_days }} 日</li>
 				</ul>
 				{!! Form::label('disp', '前回の投稿をフォームに表示：') !!}
