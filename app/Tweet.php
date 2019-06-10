@@ -39,9 +39,15 @@ class Tweet extends Model
         return $this->belongsTo(Activity::class);
     }
 
-    public function scopeCreatedLaterToday($query)
+    public function scopeCreatedBeforeToday($query)
     {
         return $query->where('created_at', '<', new Carbon('today', 'Asia/Tokyo'));
+    }
+
+    public function scopeCreatedToday($query)
+    {
+        return $query->where('created_at', '>', new Carbon('today', 'Asia/Tokyo'))
+            ->where('created_at', '<', new Carbon('tomorrow', 'Asia/Tokyo'));
     }
 
     public function scopeExitActivityHour($query)

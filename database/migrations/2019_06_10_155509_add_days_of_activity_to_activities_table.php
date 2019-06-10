@@ -14,7 +14,7 @@ class AddDaysOfActivityToActivitiesTable extends Migration
     public function up()
     {
         Schema::table('activities', function (Blueprint $table) {
-            $table->string('days_of_activity')->nullable()->default(0);
+            $table->integer('days_of_activity')->nullable()->default(0);
         });
     }
 

@@ -8,8 +8,8 @@
 				<a href="{{ route('activity.index',$user->twitter_nickname) }}">マイページへ</a>
 				<ul class="list-group">
 					<li class="list-group-item">合計時間：{{ $activity->hour }} 時間</li>
-					<li class="list-group-item">活動日数：{{ $activity->continuation_days }} 日目</li>
-					<li class="list-group-item">継続日数：{{ $activity->continuation_days }} 日</li>
+					<li class="list-group-item">活動日数：{{ $activity->days_of_activity }} 日目</li>
+					<li class="list-group-item">活動継続日数：{{ $activity->continuation_days }} 日</li>
 				</ul>
 				{!! Form::label('disp', '前回の投稿をフォームに表示：') !!}
 				{!! Form::checkbox('disp', old('disp'),false, ['id'=>'js-check']) !!}
@@ -98,7 +98,8 @@ window.addEventListener('DOMContentLoaded', function () {
             if (this.checked) {
 				@isset($latest_tweet)
 				let prev_time = @json($latest_tweet->hour);
-				let serch = "活動時間：" + prev_time + "h\n";
+				let today = @json($activity->days_of_activity);
+				let serch = "活動時間：" + prev_time + "h\nDay:" + today + "\n";
 				input_php.value = @json($latest_tweet->body);
 				let regExp = new RegExp(serch,"g");
 				input_php.value = input_php.value.replace(regExp,"");
@@ -117,12 +118,20 @@ window.addEventListener('DOMContentLoaded', function () {
 			prev_textbox_str = document.getElementById("js-countText").value;
 			let regExp = new RegExp(text,"g");
 			prev_textbox_str = prev_textbox_str.replace(regExp,"");
-			console.log(prev_textbox_str);
+		});
+		selectbx.addEventListener('click', function () {
+			let options = this.options;
+			let selected_text = options[options.selectedIndex].text;
+			let tomorrow  = @json($activity->days_of_activity) + 1;
+			text = "活動時間：" + selected_text + "h\nDay：" + tomorrow + "\n";
+			let current_text = document.getElementById("js-countText");
+			current_text.value = text + prev_textbox_str;
 		});
 		selectbx.addEventListener('change', function () {
 			let options = this.options;
 			let selected_text = options[options.selectedIndex].text;
-			text = "活動時間：" + selected_text + "h\n";
+			let tomorrow  = @json($activity->days_of_activity) + 1;
+			text = "活動時間：" + selected_text + "h\nDay：" + tomorrow + "\n";
 			let current_text = document.getElementById("js-countText");
 			current_text.value = text + prev_textbox_str;
 		});
