@@ -50,11 +50,6 @@ class Tweet extends Model
             ->where('created_at', '<', new Carbon('tomorrow', 'Asia/Tokyo'));
     }
 
-    public function scopeCreatedDate($query, $operator = null, $date)
-    {
-        return $query->whereDate('created_at', $operator, $date)->ExitActivityHour();
-    }
-
     public function scopeExitActivityHour($query)
     {
         return $query->where('hour', '>', 0);

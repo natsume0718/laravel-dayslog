@@ -17,9 +17,9 @@
 				<div class="col-lg-4 col-md-12 col-xs-12">
 					<div class="show-box">
 						@foreach ($activities as $activity)
-						<div class="panel panel-default">
-							<div class="panel-heading">{{ $activity->name }}</div>
-							<div class="panel-body">
+						<ul class="list-group">
+							<li class="list-group-item" style="color:black">{{ $activity->name }}</li>
+							<li class="list-group-item">合計時間：{{ $activity->hour }} 時間</li>
 								<li class="list-group-item">作成日:{{ $activity->created_at }}</li>
 								<li class="list-group-item">
 									<a class="btn btn-info"
@@ -34,8 +34,8 @@
 									{!! Form::submit('削除', ['class'=>'btn btn-danger']) !!}
 									{!! Form::close() !!}
 								</li>
-							</div>
-						</div>
+						</ul>
+					</br>
 						@endforeach
 					</div>
 				</div>
