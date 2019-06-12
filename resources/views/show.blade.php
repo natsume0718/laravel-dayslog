@@ -35,7 +35,7 @@
 					@endif
 				</div>
 				<div class="form-group">
-					{!! Form::label('is_reply', '※リプライ形式で投稿：') !!}
+					{!! Form::label('is_reply', 'リプライ形式で投稿：') !!}
 					{!! Form::checkbox('is_reply', old('is_reply'), ['class' => 'form-control']) !!}
 					@if ($errors->has('is_reply'))
 					<span style="color:red;">
@@ -74,9 +74,11 @@
 									href="https://twitter.com/{{$user->twitter_nickname}}/status/{{$tweet->tweet_id}}">Twitterで表示</a>
 							</td>
 							<td>
+								@if($loop->first)
 								{!! Form::open(['method' => 'DELETE','route' =>['tweet.delete',$user->twitter_nickname,$activity->task_id,$tweet->tweet_id], 'class'=>'d-inline'])!!}
 								{!! Form::submit('削除', ['class'=>'btn btn-danger']) !!}
 								{!! Form::close() !!}
+								@endif
 							</td>
 						</tr>
 						@endforeach
