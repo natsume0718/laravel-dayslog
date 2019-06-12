@@ -88,7 +88,7 @@ class ActivityController extends Controller
 
 		$user = Auth::user();
 
-		// //最新のツイートID取得してツイート
+		// 最新のツイートID取得してツイート
 		$latest_tweet = $request->is_reply ? $activity->tweets()->latest()->first(['tweet_id']) : null;
 		$tweet = $this->twitterTweet($request->tweet, $latest_tweet->tweet_id ?? null);
 		
@@ -157,24 +157,36 @@ class ActivityController extends Controller
 	public function deleteTweet(String $user_name, Activity $activity, String $id)
 	{
 		$user = $activity->user;
-		$db_tweet = $activity->tweets()->where('tweet_id', $id)->first();
-		//活動時間のある、今日のツイート数を取得
-		$exist_hour_today_tweet = $activity->tweets()->CreatedToday()->ExitActivityHour()->count();
-		if ($db_tweet) {
-			$hour = $db_tweet->hour;
-			$db_tweet->delete();
-			$activity->decrement('hour', $hour);
-			//今日のツイートがラスト一個なら活動日数減少
-			if ($exist_hour_today_tweet == 1)
-				$activity->decrement('days_of_activity', 1);
+		// 消すツイート取得
+		$del_tweet = $activity->tweets()->where('tweet_id', $id)->first();
+		if ($del_tweet) {
+			$hour = $del_tweet->hour;
+			
+			//消すツイートと同日取得
+			$date = $del_tweet->created_at->toDateString();
+			$same_date_tweet = $activity->tweets()->whereNotIn('tweet_id', [$id])->whereDate('created_at', $date)->ExitActivityHour()->count();
+			//消すツイートの前日を取得
+			$prev_date = $del_tweet->created_at->subDay()->toDateString();
+			$prev_tweet = $activity->tweets()->whereDate('created_at', $prev_date)->ExitActivityHour()->count();
 
+			//同日に他の投稿がなければ活動日数減少
+			if (!$same_date_tweet)
+				$activity->decrement('days_of_activity', 1);
+			
+			//前日にツイートしていたら継続日数減少
+			if (!$same_date_tweet && $prev_tweet)
+				$activity->decrement('continuation_days', 1);
+
+			//投稿削除
+			$del_tweet->delete();
+			$activity->decrement('hour', $hour);
 			$twitter_user = new TwitterOAuth(
 				config('twitter.consumer_key'),
 				config('twitter.consumer_secret'),
 				$user->twitter_oauth_token,
 				$user->twitter_oauth_token_secret
 			);
-			//削除
+			//ツイート削除
 			$tweet = $twitter_user->post("statuses/destroy", [
 				"id" => $id,
 			]);
