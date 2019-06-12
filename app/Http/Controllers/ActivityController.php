@@ -190,8 +190,7 @@ class ActivityController extends Controller
 			$tweet = $twitter_user->post("statuses/destroy", [
 				"id" => $id,
 			]);
-			return 'hoge';
-			//redirect()->back()->with(isset($tweet->errors) ? 'error' : 'success', isset($tweet->errors) ? '削除に失敗しました。既にツイートが削除されています。' : '削除しました');
+			return redirect()->back()->with(isset($tweet->errors) ? 'error' : 'success', isset($tweet->errors) ? '削除に失敗しました。既にツイートが削除されています。' : '削除しました');
 		}
 
 
