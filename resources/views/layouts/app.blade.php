@@ -74,7 +74,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="site-info float-left">
-								<p>&copy; Natsume All Right Received</p>
+								<p>&copy; Natsume All Rights Reserved.</p>
 							</div>
 							<div class="float-right">
 								<ul class="footer-social">
