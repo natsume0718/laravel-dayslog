@@ -9,6 +9,7 @@
         "abraham/twitteroauth": "^1.0",
         "barryvdh/laravel-debugbar": "^3.2",
         "barryvdh/laravel-ide-helper": "^2.6",
+        "doctrine/dbal": "^2.9",
         "fideloper/proxy": "~3.3",
         "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "5.5.*",
@@ -38,8 +39,7 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": [
-            ]
+            "dont-discover": []
         }
     },
     "scripts": {
