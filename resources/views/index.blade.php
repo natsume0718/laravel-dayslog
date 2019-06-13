@@ -7,7 +7,7 @@
 		<div class="container">
 			<div class="section-header">
 				<p class="btn btn-subtitle">
-					activity</p>
+					Activity</p>
 				<h2 class="section-title wow fadeIn animated" data-wow-delay="0.2s"
 					style="visibility: visible;-webkit-animation-delay: 0.2s; -moz-animation-delay: 0.2s; animation-delay: 0.2s;">
 					活動一覧</h2>

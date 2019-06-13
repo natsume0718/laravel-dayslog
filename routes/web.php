@@ -12,7 +12,6 @@
  */
 
 Route::get('/', function () {
-    // $user = Auth::user();
     return view('top', ['user' => Auth::user()]);
 })->name('top');
 Route::prefix('auth/twitter')->group(function () {
@@ -31,5 +30,3 @@ Route::group(['middleware' => ['auth', 'user.name'], 'prefix' => 'activity'], fu
     Route::delete('{user_name}/{activity}', 'ActivityController@destroy')->name('activity.delete');
     Route::delete('{user_name}/{activity}/{id}', 'ActivityController@deleteTweet')->name('tweet.delete');
 });
-
-Route::get('/home', 'HomeController@index')->name('home');
