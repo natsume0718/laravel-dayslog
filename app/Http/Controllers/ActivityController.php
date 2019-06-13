@@ -170,8 +170,8 @@ class ActivityController extends Controller
 			$prev_date = $del_tweet->created_at->subDay()->toDateString();
 			$prev_tweet = $activity->tweets()->whereDate('created_at', $prev_date)->ExitActivityHour()->count();
 
-			//同日に他の投稿がなければ活動日数減少
-			if (!$same_date_tweet)
+			//同日に他の投稿がなく消すツイートに活動時間があれば活動日数減少
+			if (!$same_date_tweet && $hour)
 				$activity->decrement('days_of_activity', 1);
 			
 			//前日にツイートしていたら継続日数減少
