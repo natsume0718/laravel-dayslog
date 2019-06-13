@@ -7,12 +7,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-	<title>404 HTML Template by Colorlib</title>
+	<title>Error</title>
 
 	<!-- Google font -->
 	<link href="https://fonts.googleapis.com/css?family=Cabin:400,700" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Montserrat:900" rel="stylesheet">
-
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+		integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 	<!-- Custom stlylesheet -->
 	<link rel="stylesheet" href="{{ asset('css/errorstyle.css') }}">
 
@@ -23,13 +24,15 @@
 	<div id="notfound">
 		<div class="notfound">
 			<div class="notfound-404">
-				<h3>408 Request Time-out</h3>
-				<h1><span>4</span><span>0</span><span>8</span></h1>
+				<h3>ご不便をおかけして申し訳ございません。</h3>
+				<h1><span>{{$status_code}}</span></h1>
 			</div>
-			<h2>There was no response within the waiting time of the request.</h2>
+			<h2>{{ $message }}</h2>
+			<div id="report">
+			<a class="twitter" href="https://twitter.com/natsume_aurlia"><i class="fab fa-twitter">問題を報告する</i></a>
+			</div>
 		</div>
 	</div>
-
-</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</body>
 
 </html>

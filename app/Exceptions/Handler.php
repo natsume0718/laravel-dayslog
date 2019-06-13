@@ -50,4 +50,27 @@ class Handler extends ExceptionHandler
     {
         return parent::render($request, $exception);
     }
+
+    /**
+     * オリジナルデザインのエラー画面をレンダリングする
+     *
+     * @param  \Symfony\Component\HttpKernel\Exception\HttpException $e
+     * @return \Illuminate\Http\Response
+     */
+    protected function renderHttpException(\Symfony\Component\HttpKernel\Exception\HttpException $e)
+    {
+
+        $status = $e->getStatusCode();
+        return response()->view(
+            "errors.common", // 共通テンプレート
+            [
+            // VIEWに与える変数
+                'exception' => $e,
+                'message' => $e->getMessage(),
+                'status_code' => $status,
+            ],
+            $status, // レスポンス自体のステータスコード
+            $e->getHeaders()
+        );
+    }
 }
