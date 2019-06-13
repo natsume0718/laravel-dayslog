@@ -1663,11 +1663,9 @@ section {
 .form-control {
   width: 100%;
   margin-bottom: 30px;
-  padding: 15px 30px;
-  font-size: 14px;
+  font-size: 16px;
   border-radius: 30px;
   text-align: center;
-  border: 1px solid #ececec;
   box-shadow: 6px 0px 43px rgba(131, 131, 131, 0.13);
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
