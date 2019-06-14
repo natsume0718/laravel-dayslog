@@ -9,6 +9,8 @@ use Carbon\Carbon;
 
 class Tweet extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'tweets';
 
     /**
