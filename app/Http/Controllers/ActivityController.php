@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use App\Rules\InputHour;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 class ActivityController extends Controller
 {
@@ -97,37 +99,45 @@ class ActivityController extends Controller
 			//活動時間取得
 			$time = Config::get('form_input_settings.time', array());
 			$hour = $time[$request->hour];
-			//活動時間のある、今日のツイートを取得
-			$exist_hour_today_tweet = $activity->tweets()->CreatedToday()->ExitActivityHour()->count();
-			//投稿を保存
-			$posted_tweet = $activity->tweets()->create([
-				'user_id' => $user->twitter_id,
-				'tweet_id' => $tweet->id,
-				'body' => $tweet->text,
-				'hour' => $hour
-			]);
+			DB::beginTransaction();
+			try {
+				//活動時間のある、今日のツイートを取得
+				$exist_hour_today_tweet = $activity->tweets()->CreatedToday()->ExitActivityHour()->count();
+				//投稿を保存
+				$posted_tweet = $activity->tweets()->create([
+					'user_id' => $user->twitter_id,
+					'tweet_id' => $tweet->id,
+					'body' => $tweet->text,
+					'hour' => $hour
+				]);
 
-			//投稿成功している、活動時間がある
-			if ($posted_tweet && $hour) {
-				//活動時間のある、今日より以前の最新のツイート取得
-				$exist_hour_latest_tweet = $activity->tweets()->CreatedBeforeToday()->ExitActivityHour()->latest()->first();
-				//差分取得
-				$diff_posted_day = $exist_hour_latest_tweet ? $exist_hour_latest_tweet->created_at->diffInDays($posted_tweet->created_at) : null;
-				//今日活動時間のあるツイートしていないなら増加
-				if (!$exist_hour_today_tweet) {
+				//投稿成功している、活動時間がある
+				if ($posted_tweet && $hour) {
+					//活動時間のある、今日より以前の最新のツイート取得
+					$exist_hour_latest_tweet = $activity->tweets()->CreatedBeforeToday()->ExitActivityHour()->latest()->first();
+					//差分取得
+					$diff_posted_day = $exist_hour_latest_tweet ? $exist_hour_latest_tweet->created_at->diffInDays($posted_tweet->created_at) : null;
+					//今日活動時間のあるツイートしていないなら増加
+					if (!$exist_hour_today_tweet) {
 
-					$activity->increment('days_of_activity', 1);
-					//前日に投稿しているなら継続日数+1
-					if ($exist_hour_latest_tweet && $exist_hour_latest_tweet->created_at->isYesterDay())
-						$activity->increment('continuation_days', 1);
+						$activity->increment('days_of_activity', 1);
+						//前日に投稿しているなら継続日数+1
+						if ($exist_hour_latest_tweet && $exist_hour_latest_tweet->created_at->isYesterDay())
+							$activity->increment('continuation_days', 1);
 				
-					//２日以上経過していたら、継続日数リセット
-					if ($diff_posted_day > 1)
-						$activity->update(['continuation_days' => 0]);
-				}
+						//２日以上経過していたら、継続日数リセット
+						if ($diff_posted_day > 1)
+							$activity->update(['continuation_days' => 0]);
+					}
+					//活動時間増加
+					$activity->increment('hour', $hour);
 
-				//活動時間増加
-				$activity->increment('hour', $hour);
+				}
+				DB::commit();
+			} catch (Exception $e) {
+				DB::rollback();
+				Log::error($e->getMessage(), [$user_name, $request, $activity]);
+				return redirect()->back()->with('error', '投稿に失敗しました');
 			}
 			return redirect()->back()->with('success', '投稿しました');
 		}
@@ -142,7 +152,16 @@ class ActivityController extends Controller
 	 */
 	public function destroy(String $user_name, Activity $activity)
 	{
-		$activity->delete();
+		DB::beginTransaction();
+		try {
+			$activity->delete();
+			DB::commit();
+		} catch (Exception $e) {
+			DB::rollback();
+			Log::error($e->getMessage(), [$user_name, $activity]);
+			return redirect()->back()->with('error', '活動削除に失敗しました。');
+		}
+
 		return redirect()->back()->with('success', '活動を削除しました');
 	}
 
@@ -162,25 +181,32 @@ class ActivityController extends Controller
 		$del_tweet = $activity->tweets()->where('tweet_id', $id)->first();
 		if ($del_tweet) {
 			$hour = $del_tweet->hour;
-			
-			//消すツイートと同日取得
-			$date = $del_tweet->created_at->toDateString();
-			$same_date_tweet = $activity->tweets()->whereNotIn('tweet_id', [$id])->whereDate('created_at', $date)->ExitActivityHour()->count();
-			//消すツイートの前日を取得
-			$prev_date = $del_tweet->created_at->subDay()->toDateString();
-			$prev_tweet = $activity->tweets()->whereDate('created_at', $prev_date)->ExitActivityHour()->count();
+			DB::beginTransaction();
+			try {
+				//消すツイートと同日取得
+				$date = $del_tweet->created_at->toDateString();
+				$same_date_tweet = $activity->tweets()->whereNotIn('tweet_id', [$id])->whereDate('created_at', $date)->ExitActivityHour()->count();
+				//消すツイートの前日を取得
+				$prev_date = $del_tweet->created_at->subDay()->toDateString();
+				$prev_tweet = $activity->tweets()->whereDate('created_at', $prev_date)->ExitActivityHour()->count();
 
-			//同日に他の投稿がなく消すツイートに活動時間があれば活動日数減少
-			if (!$same_date_tweet && $hour)
-				$activity->decrement('days_of_activity', 1);
+				//同日に他の投稿がなく消すツイートに活動時間があれば活動日数減少
+				if (!$same_date_tweet && $hour)
+					$activity->decrement('days_of_activity', 1);
 			
-			//前日にツイートしていたら継続日数減少
-			if (!$same_date_tweet && $prev_tweet)
-				$activity->decrement('continuation_days', 1);
+				//前日にツイートしていたら継続日数減少
+				if (!$same_date_tweet && $prev_tweet)
+					$activity->decrement('continuation_days', 1);
 
-			//投稿削除
-			$del_tweet->delete();
-			$activity->decrement('hour', $hour);
+				//投稿削除
+				$del_tweet->delete();
+				$activity->decrement('hour', $hour);
+				DB::commit();
+			} catch (Exception $e) {
+				DB::rollback();
+				Log::error($e->getMessage(), [$user, $del_tweet]);
+				return redirect()->back()->with('error', '削除中にエラーが発生しました。再度お試しください。');
+			}
 			$twitter_user = new TwitterOAuth(
 				config('twitter.consumer_key'),
 				config('twitter.consumer_secret'),
