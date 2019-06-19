@@ -93,7 +93,7 @@ class ActivityController extends Controller
 		// 最新のツイートID取得してツイート
 		$latest_tweet = $request->is_reply ? $activity->tweets()->latest()->first(['tweet_id']) : null;
 		$tweet = $this->twitterTweet($request->tweet, $latest_tweet->tweet_id ?? null);
-		
+
 		//ツイート成功時DBに保存
 		if ($tweet) {
 			//活動時間取得
@@ -107,7 +107,7 @@ class ActivityController extends Controller
 				$posted_tweet = $activity->tweets()->create([
 					'user_id' => $user->twitter_id,
 					'tweet_id' => $tweet->id,
-					'body' => $tweet->text,
+					'body' => $tweet->full_text,
 					'hour' => $hour
 				]);
 
@@ -124,14 +124,13 @@ class ActivityController extends Controller
 						//前日に投稿しているなら継続日数+1
 						if ($exist_hour_latest_tweet && $exist_hour_latest_tweet->created_at->isYesterDay())
 							$activity->increment('continuation_days', 1);
-				
+
 						//２日以上経過していたら、継続日数リセット
 						if ($diff_posted_day > 1)
 							$activity->update(['continuation_days' => 0]);
 					}
 					//活動時間増加
 					$activity->increment('hour', $hour);
-
 				}
 				DB::commit();
 			} catch (Exception $e) {
@@ -193,7 +192,7 @@ class ActivityController extends Controller
 				//同日に他の投稿がなく消すツイートに活動時間があれば活動日数減少
 				if (!$same_date_tweet && $hour)
 					$activity->decrement('days_of_activity', 1);
-			
+
 				//前日にツイートしていたら継続日数減少
 				if (!$same_date_tweet && $prev_tweet)
 					$activity->decrement('continuation_days', 1);
@@ -219,8 +218,6 @@ class ActivityController extends Controller
 			]);
 			return redirect()->back()->with(isset($tweet->errors) ? 'error' : 'success', isset($tweet->errors) ? '削除に失敗しました。既にツイートが削除されています。' : '削除しました');
 		}
-
-
 	}
 
 	/**
@@ -244,10 +241,10 @@ class ActivityController extends Controller
 		$tweet = $twitter_user->post("statuses/update", [
 			"status" => $txt,
 			'in_reply_to_status_id' => $replyId,
+			"tweet_mode" => "extended",
 		]);
 
 		//エラー出たらnullを返す
 		return isset($tweet->errors) ? null : $tweet;
-
 	}
 }
