@@ -11,9 +11,9 @@ jQuery
 TwitterAPI
 
 ## 機能
-Twitter連携
-Twitter認証
-基本的なCRUD
+- Twitter連携
+- Twitter認証
+- 基本的なCRUD
 
 
 ## 動作リンク
